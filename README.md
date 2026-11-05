@@ -1,6 +1,15 @@
-# TBC.OpenBanking.Jws
+# Ivane1985 Open Banking JWS
 
-.NET libraries for creating and verifying detached JWS signatures on HTTP messages used by Open Banking integrations.
+Created and independently developed by Ivane1985 in the [Ivane120585 repository](https://github.com/Ivane120585/TBC.OpenBanking.Jws.Ivo120585), this project provides .NET libraries for creating and verifying detached JWS signatures on HTTP messages.
+
+This project is not an official TBC Bank project or service. Some source components retain their original TBC Bank MIT copyright notices; these notices do not change who owns and develops this repository. The NuGet package IDs identify the Ivane1985 project and distinguish it from any official TBC packages.
+
+## NuGet packages
+
+- `Ivane120585.TBC.OpenBanking.Jws`
+- `Ivane120585.TBC.OpenBanking.Jws.Http` (depends on the core package)
+
+These IDs identify packages published for the Ivane1985 project. Applications consuming these packages must reference these IDs; existing references to `TBC.OpenBanking.Jws` or `TBC.OpenBanking.Jws.Http` refer to packages with those separate IDs.
 
 ## What this repository provides
 
@@ -21,7 +30,7 @@ dotnet build TBC.OpenBanking.Jws.slnx --no-restore
 dotnet test TBC.OpenBanking.Jws.slnx --no-restore
 ```
 
-The GitHub Actions CI and release workflows restore, build, and run tests. CI runs on the repository's `Ivane1985` default branch and on `master` during branch transitions. NuGet publishing is tag-triggered and requires the `NUGET_API_KEY` repository secret.
+The GitHub Actions CI and release workflows restore, build, and run tests. CI runs on the repository's `Ivane1985` default branch and on `master` during branch transitions. NuGet publishing is tag-triggered and requires the `NUGET_API_KEY` repository secret. Published package metadata identifies this repository and its independent maintainer; it does not claim to be published by TBC Bank.
 
 ## Audit events
 
@@ -59,4 +68,4 @@ See [SECURITY.md](SECURITY.md) for deployment boundaries, key handling, and repo
 
 ## License
 
-See [LICENSE.txt](LICENSE.txt).
+The [MIT license](LICENSE.txt) and original copyright notices for source components are retained. New project development is maintained in this repository by Ivane1985.
