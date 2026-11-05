@@ -15,6 +15,10 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     defaults:
       run:
         shell: pwsh
@@ -47,8 +51,63 @@ jobs:
     - name: Test
       run: dotnet test TBC.OpenBanking.Jws.slnx -c Release --no-restore --no-build --verbosity normal
 
+    - name: Prepare release assets and checksums
+      run: |
+        $packageFiles = @()
+        $packageFiles += Get-ChildItem -Path "src\TBC.OpenBanking.Jws\src\bin\Release" -Filter "Ivane120585.TBC.OpenBanking.Jws.*.nupkg" -File | Where-Object { $_.Name -notlike "*.symbols.nupkg" }
+        $packageFiles += Get-ChildItem -Path "src\TBC.OpenBanking.Jws.Http\src\bin\Release" -Filter "Ivane120585.TBC.OpenBanking.Jws.Http.*.nupkg" -File | Where-Object { $_.Name -notlike "*.symbols.nupkg" }
+
+        if ($packageFiles.Count -ne 2) {
+          throw "Expected exactly two release packages, found $($packageFiles.Count)."
+        }
+
+        New-Item -ItemType Directory -Force -Path "release-assets" | Out-Null
+        foreach ($package in $packageFiles) {
+          Copy-Item -Path $package.FullName -Destination "release-assets"
+        }
+
+        $checksumLines = Get-ChildItem -Path "release-assets" -Filter "*.nupkg" -File |
+          Sort-Object Name |
+          ForEach-Object {
+            $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $($_.Name)"
+          }
+        Set-Content -Path "release-assets\SHA256SUMS.txt" -Value $checksumLines -Encoding ascii
+
+    - name: Attest package provenance
+      uses: actions/attest-build-provenance@v3
+      with:
+        subject-checksums: release-assets/SHA256SUMS.txt
+
     - name: Push Jws
       run: dotnet nuget push "src\TBC.OpenBanking.Jws\src\bin\Release\*.nupkg" -k "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" -n --skip-duplicate --force-english-output
 
     - name: Push Jws.Http
       run: dotnet nuget push "src\TBC.OpenBanking.Jws.Http\src\bin\Release\*.nupkg" -k "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" -n --skip-duplicate --force-english-output
+
+    - name: Upload release assets
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-assets
+        path: release-assets/*
+        if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Download release assets
+      uses: actions/download-artifact@v4
+      with:
+        name: release-assets
+        path: release-assets
+
+    - name: Publish GitHub release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        generate_release_notes: true
+        fail_on_unmatched_files: true
+        files: release-assets/*

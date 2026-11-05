@@ -10,6 +10,12 @@ The verifier builds a certificate chain using the platform's configured trust. A
 
 Audit events are metadata-only and are delivered through `IAuditSink`. The application must supply a durable, access-controlled, tamper-evident sink and monitor failures. The sink is synchronous and its exceptions propagate. Do not put request bodies, authorization values, personal data, private keys, or exception messages in audit records.
 
+## Release integrity and source history
+
+Tag-triggered releases attach SHA-256 checksums and GitHub Actions build provenance for the published NuGet packages. Follow [PROVENANCE.md](PROVENANCE.md) to verify downloaded package files and check that their attestations come from this repository's release workflow. Checksums alone are not authenticated; use them together with a verified attestation.
+
+Git history, package metadata, and build attestations record repository and build facts. They do not determine legal ownership, establish who authored every inherited source file, or prove that repository history cannot be changed by an administrator. Preserve existing source copyright notices and license terms. The repository's ruleset is currently disabled; repository administrators should enable protections that prevent force-pushes/deletion and require reviewed changes if immutable branch history is required.
+
 ## Supported algorithms
 
 The library supports the RSA PKCS#1, RSA-PSS, and ECDSA JWS algorithm families exposed by `SupportedAlgorithms` (`RS256/384/512`, `PS256/384/512`, and `ES256/384/512`). Configure an explicit allowlist appropriate to the partner profile; do not select an algorithm from untrusted input without enforcing policy.

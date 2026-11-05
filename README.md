@@ -1,8 +1,8 @@
-# Ivane1985 Open Banking JWS
+# Open Banking JWS
 
-Created and independently developed by Ivane1985 in the [Ivane120585 repository](https://github.com/Ivane120585/TBC.OpenBanking.Jws.Ivo120585), this project provides .NET libraries for creating and verifying detached JWS signatures on HTTP messages.
+Maintained and extended in the [Ivane120585 repository](https://github.com/Ivane120585/TBC.OpenBanking.Jws.Ivo120585), this project provides .NET libraries for creating and verifying detached JWS signatures on HTTP messages.
 
-This project is not an official TBC Bank project or service. Some source components retain their original TBC Bank MIT copyright notices; these notices do not change who owns and develops this repository. The NuGet package IDs identify the Ivane1985 project and distinguish it from any official TBC packages.
+This repository is not an official TBC Bank project or service. Its available Git history starts from the [TBCBank/TBC.OpenBanking.Jws repository](https://github.com/TBCBank/TBC.OpenBanking.Jws), and source components retain their original copyright notices and MIT license. The separate NuGet package IDs identify this repository's packages; they do not establish exclusive ownership of the inherited source. See [PROVENANCE.md](PROVENANCE.md) for source lineage, release verification, and the limits of that evidence.
 
 ## Use and network behavior
 
@@ -34,7 +34,34 @@ dotnet build TBC.OpenBanking.Jws.slnx --no-restore
 dotnet test TBC.OpenBanking.Jws.slnx --no-restore
 ```
 
-The GitHub Actions CI and release workflows restore, build, and run tests. CI runs on the repository's `Ivane1985` default branch and on `master` during branch transitions. NuGet publishing is tag-triggered and requires the `NUGET_API_KEY` repository secret. Published package metadata identifies this repository and its independent maintainer; it does not claim to be published by TBC Bank.
+The GitHub Actions CI and release workflows restore, build, and run tests. CI runs on the repository's `Ivane1985` default branch and on `master` during branch transitions. NuGet publishing is tag-triggered and requires the `NUGET_API_KEY` repository secret. Published package metadata identifies this repository's maintainer; it does not claim to be published by TBC Bank.
+
+Tag-triggered releases publish both NuGet packages and attach the package files and a `SHA256SUMS.txt` manifest to a GitHub Release. GitHub Actions also creates SLSA build provenance attestations for the package hashes.
+
+### Verify a release
+
+Install the [GitHub CLI](https://cli.github.com/) with attestation support, then download the assets for a release tag:
+
+Replace `<tag>` with the release tag before running:
+
+```sh
+gh release download <tag> --repo Ivane120585/TBC.OpenBanking.Jws.Ivo120585
+sha256sum -c SHA256SUMS.txt
+```
+
+Replace `<version>` with the package version you downloaded, then verify each package against the repository and release workflow identity:
+
+```sh
+gh attestation verify Ivane120585.TBC.OpenBanking.Jws.<version>.nupkg \
+  --repo Ivane120585/TBC.OpenBanking.Jws.Ivo120585 \
+  --signer-workflow Ivane120585/TBC.OpenBanking.Jws.Ivo120585/.github/workflows/nuget.yml
+
+gh attestation verify Ivane120585.TBC.OpenBanking.Jws.Http.<version>.nupkg \
+  --repo Ivane120585/TBC.OpenBanking.Jws.Ivo120585 \
+  --signer-workflow Ivane120585/TBC.OpenBanking.Jws.Ivo120585/.github/workflows/nuget.yml
+```
+
+The checksum detects file changes relative to the published manifest. A valid attestation links a package digest to a GitHub Actions workflow and source revision; neither mechanism proves legal ownership, the identity of the human author, or affiliation/authorization by a bank.
 
 ## Audit events
 

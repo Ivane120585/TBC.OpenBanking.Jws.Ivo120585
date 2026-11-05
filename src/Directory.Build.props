@@ -12,7 +12,7 @@
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
         <NoWarn>$(NoWarn);IDE0008;IDE0011;IDE0022;IDE0055;IDE0065;IDE0130;IDE0160</NoWarn>
         <Company>Ivane1985</Company>
-        <Copyright>&#169; 2021 JSC TBC Bank; independent project developed by Ivane1985</Copyright>
+        <Copyright>&#169; 2021 JSC TBC Bank; repository maintained by Ivane1985</Copyright>
         <Authors>Ivane1985 (Ivane120585)</Authors>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
