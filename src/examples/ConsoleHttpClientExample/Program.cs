@@ -77,6 +77,10 @@ internal static class Program
                     {
                         client.BaseAddress = baseAddress;
                     })
+                    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                    {
+                        AllowAutoRedirect = false,
+                    })
                     .AddHttpMessageHandler(services =>
                     {
                         var options       = services.GetRequiredService<IOptions<JwsClientOptions>>();

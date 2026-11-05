@@ -4,6 +4,10 @@ Created and independently developed by Ivane1985 in the [Ivane120585 repository]
 
 This project is not an official TBC Bank project or service. Some source components retain their original TBC Bank MIT copyright notices; these notices do not change who owns and develops this repository. The NuGet package IDs identify the Ivane1985 project and distinguish it from any official TBC packages.
 
+## Use and network behavior
+
+The MIT license permits use, modification, and redistribution, including commercial use, provided its copyright and license notice are retained. The SDK has no account allowlist, forced proxy, hard-coded bank endpoint, or automatic data-forwarding service. Its examples connect only to the HTTPS endpoint supplied in local configuration. They do not automatically follow HTTP redirects. In the consent example, `TPP-Redirect-URI` is a request header sent to the configured provider; it does not cause this SDK or server to redirect a browser or forward data to that URI. TLS validation remains enabled.
+
 ## NuGet packages
 
 - `Ivane120585.TBC.OpenBanking.Jws`
